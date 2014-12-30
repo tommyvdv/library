@@ -160,6 +160,23 @@ class SpoonTemplateCompilerTest extends PHPUnit_Framework_TestCase
 		$this->runTests('Object1Object2', 'iteration_over_collection_of_objects.tpl');
 	}
 
+	function testIterationOverCollectionOfObjectsInObject()
+	{
+		$object1 = new Object();
+		$object1->setName('Object1');
+
+		$object2 = new Object();
+		$object2->setName('Object2');
+		$collection = new Collection(array($object1, $object2));
+
+		$object = new Object();
+		$object->setNestedObject($collection);
+		$parent = array($object);
+
+		$this->tpl->assign('parent', $parent);
+		$this->runTests('Object1Object2', 'iteration_over_collection_in_collection.tpl');
+	}
+
 	function testCycle()
 	{
 		$this->tpl->assign(
