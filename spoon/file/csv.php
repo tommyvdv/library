@@ -252,6 +252,12 @@ class SpoonFileCSV
 				// remove the original field from this row
 				unset($row[$columnId]);
 			}
+
+            // Remote empty rows.
+            if(count($row) != count(array_filter($row)))
+            {
+                unset($rows[$rowId]);
+            }
 		}
 
 		// return the array
