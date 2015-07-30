@@ -67,6 +67,29 @@ class SpoonFormDate extends SpoonFormInput
 		 */
 		$this->setMask(($mask !== null) ? $mask : $this->mask);
 
+		// Get the submitted value and set it.
+		$submittedValue = null;
+		if($this->isSubmitted())
+		{
+			// post/get data
+			$data = $this->getMethod(true);
+			$submittedValue = isset($data[$this->getName()]) ? $data[$this->getName()] : '';
+
+			// submitted by post (may be empty)
+			if(is_scalar($submittedValue))
+			{
+				// value
+				$submittedValue = strtotime($data[$this->attributes['name']]);
+			}
+			else
+			{
+				$submittedValue = 'Array';
+			}
+		}
+		if ($submittedValue) {
+			$value = $submittedValue;
+		}
+
 		/**
 		 * The value will be filled based on the default input mask
 		 * if no value has been defined.
