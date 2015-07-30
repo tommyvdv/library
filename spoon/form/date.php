@@ -221,6 +221,15 @@ class SpoonFormDate extends SpoonFormInput
 		return $value;
 	}
 
+	/**
+	 * Get the value as Unix timestamp
+	 *
+	 * @return int
+	 */
+    public function getValueTimestamp()
+    {
+        return $this->timestamp;
+    }
 
 	/**
 	 * Checks if this field has any content (except spaces).
@@ -460,6 +469,7 @@ class SpoonFormDate extends SpoonFormInput
 	 */
 	private function setValue($value)
 	{
+		$this->timestamp = $value;
 		$this->value = ($value === '' ? '' : date($this->mask, (int) $value));
 	}
 }
