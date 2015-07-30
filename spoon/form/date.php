@@ -426,23 +426,18 @@ class SpoonFormDate extends SpoonFormInput
 	{
 		// redefine mask
 		$mask = ($mask !== null) ? (string) $mask : $this->mask;
+		$aMask = str_split($mask);
 
 		// allowed characters
-		$aCharachters = array('.', '-', '/', 'd', 'm', 'y', 'Y');
-
+		$aCharachters = array('.', '-', '/', 'd', 'm', 'y', 'Y', 'j', 'n');
 		// new mask
 		$maskCorrected = '';
 
 		// loop all elements
-		for($i = 0; $i < strlen($mask); $i++)
-		{
-			// char allowed
-			if(in_array(substr($mask, $i, 1), $aCharachters)) $maskCorrected .= substr($mask, $i, 1);
-		}
+		$maskCorrected = implode('', array_intersect($aMask, $aCharachters));
 
 		// new mask
 		$this->mask = $maskCorrected;
-
 		// define maximum length for this element
 		$maskCorrected = str_replace(array('d', 'm', 'y', 'Y'), array('dd', 'mm', 'y', 'yy'), $maskCorrected);
 
