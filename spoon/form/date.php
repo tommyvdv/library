@@ -68,24 +68,7 @@ class SpoonFormDate extends SpoonFormInput
 		$this->setMask(($mask !== null) ? $mask : $this->mask);
 
 		// Get the submitted value and set it.
-		$submittedValue = null;
-		if($this->isSubmitted())
-		{
-			// post/get data
-			$data = $this->getMethod(true);
-			$submittedValue = isset($data[$this->getName()]) ? $data[$this->getName()] : '';
-
-			// submitted by post (may be empty)
-			if(is_scalar($submittedValue))
-			{
-				// value
-				$submittedValue = strtotime($data[$this->attributes['name']]);
-			}
-			else
-			{
-				$submittedValue = 'Array';
-			}
-		}
+		$submittedValue = $this->getSubmittedValue();
 		if ($submittedValue) {
 			$value = $submittedValue;
 		}
@@ -104,6 +87,44 @@ class SpoonFormDate extends SpoonFormInput
 		// update reserved attributes
 		$this->reservedAttributes[] = 'maxlength';
 	}
+
+    /**
+     * Load the value.
+     * Get the value and set it.
+     */
+    public function loadSubmittedValue()
+    {
+        $submittedValue = $this->getSubmittedValue();
+        if ($submittedValue) {
+            $this->setValue($submittedValue);
+        }
+    }
+
+    /**
+     * Get the value from POST or GET if present and
+     * if submitted.
+     */
+    public function getSubmittedValue()
+    {
+        $submittedValue = null;
+        if($this->isSubmitted())
+        {
+            // post/get data
+            $data = $this->getMethod(true);
+            $submittedValue = isset($data[$this->getName()]) ? $data[$this->getName()] : '';
+            // submitted by post (may be empty)
+            if(is_scalar($submittedValue))
+            {
+                // value
+                $submittedValue = strtotime($data[$this->attributes['name']]);
+            }
+            else
+            {
+                $submittedValue = 'Array';
+            }
+        }
+        return $submittedValue;
+    }
 
 
 	/**
