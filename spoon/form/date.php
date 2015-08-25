@@ -88,43 +88,43 @@ class SpoonFormDate extends SpoonFormInput
 		$this->reservedAttributes[] = 'maxlength';
 	}
 
-    /**
-     * Load the value.
-     * Get the value and set it.
-     */
-    public function loadSubmittedValue()
-    {
-        $submittedValue = $this->getSubmittedValue();
-        if ($submittedValue) {
-            $this->setValue($submittedValue);
-        }
-    }
+	/**
+	 * Load the value.
+	 * Get the value and set it.
+	 */
+	public function loadSubmittedValue()
+	{
+		$submittedValue = $this->getSubmittedValue();
+		if ($submittedValue) {
+			$this->setValue($submittedValue);
+		}
+	}
 
-    /**
-     * Get the value from POST or GET if present and
-     * if submitted.
-     */
-    public function getSubmittedValue()
-    {
-        $submittedValue = null;
-        if($this->isSubmitted())
-        {
-            // post/get data
-            $data = $this->getMethod(true);
-            $submittedValue = isset($data[$this->getName()]) ? $data[$this->getName()] : '';
-            // submitted by post (may be empty)
-            if(is_scalar($submittedValue))
-            {
-                // value
-                $submittedValue = strtotime($data[$this->attributes['name']]);
-            }
-            else
-            {
-                $submittedValue = 'Array';
-            }
-        }
-        return $submittedValue;
-    }
+	/**
+	 * Get the value from POST or GET if present and
+	 * if submitted.
+	 */
+	public function getSubmittedValue()
+	{
+		$submittedValue = null;
+		if($this->isSubmitted())
+		{
+			// post/get data
+			$data = $this->getMethod(true);
+			$submittedValue = isset($data[$this->getName()]) ? $data[$this->getName()] : '';
+			// submitted by post (may be empty)
+			if(is_scalar($submittedValue))
+			{
+				// value
+				$submittedValue = strtotime($data[$this->attributes['name']]);
+			}
+			else
+			{
+				$submittedValue = 'Array';
+			}
+		}
+		return $submittedValue;
+	}
 
 
 	/**
@@ -242,15 +242,6 @@ class SpoonFormDate extends SpoonFormInput
 		return $value;
 	}
 
-	/**
-	 * Get the value as Unix timestamp
-	 *
-	 * @return int
-	 */
-    public function getValueTimestamp()
-    {
-        return $this->timestamp;
-    }
 
 	/**
 	 * Checks if this field has any content (except spaces).
@@ -300,10 +291,10 @@ class SpoonFormDate extends SpoonFormInput
 			}
 
 			// maxlength checks out (needs to be equal)
-			if(strlen((string) $data[$this->attributes['name']]) == $this->attributes['maxlength'])
+			if(strlen((string) $data[$this->attributes['name']]) <= $this->attributes['maxlength'])
 			{
 				// define long mask
-				$longMask = str_replace(array('d', 'm', 'y', 'Y'), array('dd', 'mm', 'y', 'yy'), $this->mask);
+				$longMask = str_replace(array('d', 'm', 'y', 'Y', 'n', 'j'), array('dd', 'mm', 'y', 'yy', 'nn', 'jj'), $this->mask);
 
 				// init vars
 				$year = (int) date('Y');
@@ -449,8 +440,8 @@ class SpoonFormDate extends SpoonFormInput
 	/**
 	 * Set the input mask.
 	 *
-	 * @return	SpoonFormDate
-	 * @param	string[optional] $mask	The date-mask.
+	 * @return  SpoonFormDate
+	 * @param   string[optional] $mask  The date-mask.
 	 */
 	public function setMask($mask = null)
 	{
@@ -469,7 +460,7 @@ class SpoonFormDate extends SpoonFormInput
 		// new mask
 		$this->mask = $maskCorrected;
 		// define maximum length for this element
-		$maskCorrected = str_replace(array('d', 'm', 'y', 'Y'), array('dd', 'mm', 'y', 'yy'), $maskCorrected);
+		$maskCorrected = str_replace(array('d', 'm', 'y', 'Y', 'n', 'j'), array('dd', 'mm', 'y', 'yy', 'nn', 'jj'), $maskCorrected);
 
 		// update maxium length (count double for 'y' because it's too short otherwise)
 		$this->attributes['maxlength'] = strlen($maskCorrected) + substr_count($maskCorrected, 'y');
