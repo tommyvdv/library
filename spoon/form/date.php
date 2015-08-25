@@ -67,6 +67,12 @@ class SpoonFormDate extends SpoonFormInput
 		 */
 		$this->setMask(($mask !== null) ? $mask : $this->mask);
 
+		// Get the submitted value and set it.
+		$submittedValue = $this->getSubmittedValue();
+		if ($submittedValue) {
+			$value = $submittedValue;
+		}
+
 		/**
 		 * The value will be filled based on the default input mask
 		 * if no value has been defined.
@@ -81,6 +87,44 @@ class SpoonFormDate extends SpoonFormInput
 		// update reserved attributes
 		$this->reservedAttributes[] = 'maxlength';
 	}
+
+    /**
+     * Load the value.
+     * Get the value and set it.
+     */
+    public function loadSubmittedValue()
+    {
+        $submittedValue = $this->getSubmittedValue();
+        if ($submittedValue) {
+            $this->setValue($submittedValue);
+        }
+    }
+
+    /**
+     * Get the value from POST or GET if present and
+     * if submitted.
+     */
+    public function getSubmittedValue()
+    {
+        $submittedValue = null;
+        if($this->isSubmitted())
+        {
+            // post/get data
+            $data = $this->getMethod(true);
+            $submittedValue = isset($data[$this->getName()]) ? $data[$this->getName()] : '';
+            // submitted by post (may be empty)
+            if(is_scalar($submittedValue))
+            {
+                // value
+                $submittedValue = strtotime($data[$this->attributes['name']]);
+            }
+            else
+            {
+                $submittedValue = 'Array';
+            }
+        }
+        return $submittedValue;
+    }
 
 
 	/**
@@ -198,6 +242,15 @@ class SpoonFormDate extends SpoonFormInput
 		return $value;
 	}
 
+	/**
+	 * Get the value as Unix timestamp
+	 *
+	 * @return int
+	 */
+    public function getValueTimestamp()
+    {
+        return $this->timestamp;
+    }
 
 	/**
 	 * Checks if this field has any content (except spaces).
@@ -403,23 +456,18 @@ class SpoonFormDate extends SpoonFormInput
 	{
 		// redefine mask
 		$mask = ($mask !== null) ? (string) $mask : $this->mask;
+		$aMask = str_split($mask);
 
 		// allowed characters
-		$aCharachters = array('.', '-', '/', 'd', 'm', 'y', 'Y');
-
+		$aCharachters = array('.', '-', '/', 'd', 'm', 'y', 'Y', 'j', 'n');
 		// new mask
 		$maskCorrected = '';
 
 		// loop all elements
-		for($i = 0; $i < strlen($mask); $i++)
-		{
-			// char allowed
-			if(in_array(substr($mask, $i, 1), $aCharachters)) $maskCorrected .= substr($mask, $i, 1);
-		}
+		$maskCorrected = implode('', array_intersect($aMask, $aCharachters));
 
 		// new mask
 		$this->mask = $maskCorrected;
-
 		// define maximum length for this element
 		$maskCorrected = str_replace(array('d', 'm', 'y', 'Y'), array('dd', 'mm', 'y', 'yy'), $maskCorrected);
 
@@ -442,6 +490,7 @@ class SpoonFormDate extends SpoonFormInput
 	 */
 	private function setValue($value)
 	{
+		$this->timestamp = $value;
 		$this->value = ($value === '' ? '' : date($this->mask, (int) $value));
 	}
 }
