@@ -253,7 +253,19 @@ class SpoonFormRadiobutton extends SpoonFormElement
 			$value = is_array($value) ? 'Array' : trim((string) $value);
 
 			// correct
-			if($value != '' && isset($this->values[$value])) return true;
+			if(
+				$value != ''
+				&& isset($this->values[$value])
+			) {
+				return true;
+			}
+
+			if(
+				$value != ''
+				&& isset($this->values[htmlspecialchars($value, ENT_QUOTES)])
+			) {
+				return true;
+			}
 		}
 
 		// oh-oh
